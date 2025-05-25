@@ -4,18 +4,34 @@ EXIT_INPUT = 3
 
 INVALID_CHOICE_ERROR="Choice invalid! Please try again... \n"
 
+ALPHABET="abcdefghijklmnopqrstuvwxyz"
+
 running = True
 
-def decrypt(value):
+def decrypt(text: str, offset:int) -> str:
+    #go through text
+    message = ""
+    for letter in text:
+        index = ALPHABET.find(letter.lower())
+        index = (index + offset) % 25
+        decodedLetter = ALPHABET[index]
+        message += decodedLetter.upper() if letter.isupper() else decodedLetter
+    return message
+
+
+def encrypt(text: str, offset:int):
     pass
 
-def encrypt(value):
+def handleDecrypt(text: str, offset: int | None):
+    #TODO check the value if null then go through all if not print result for value
+    if offset != -1:
+        print("Offset {}: \n    {}".format(offset, decrypt(text, offset - 1)))
+    else:
+        for index in range(1,27):
+            print("Offset {}: \n    {}".format(index, decrypt(text, index - 1)))
     pass
 
-def handleEncrypt():
-    pass
-
-def handleDecrypt():
+def handleEncrypt(text: str, offset: int | None):
     pass
 
 
@@ -30,7 +46,7 @@ while(running):
     if choice == EXIT_INPUT:
         print("Goodbye ^^")
         break
-    elif choice <1 or choice > 3:
+    elif choice < 1 or choice > 3:
         print(INVALID_CHOICE_ERROR)
         continue
 
@@ -38,27 +54,31 @@ while(running):
     text = input("Please enter the {}: \n".format(filler))
 
     try:    
-        specs = int(input(" [1] Enter value \n [2] Show all\n [3] Return \n"))
+        specs = int(input(" [1] Enter offset \n [2] Show all\n [3] Return \n"))
     except ValueError:
         print(INVALID_CHOICE_ERROR)
         continue
 
+    offset = -1
+
     if specs == EXIT_INPUT:
         print("Returning to Main Menu...")
         continue
-    elif specs <1 or specs > 3:
+    elif specs < 1 or specs > 3:
         print(INVALID_CHOICE_ERROR)
         continue
     elif specs == 1:
         try:
-            value = int(input("Enter value: \n"))
+            offset = int(input("Enter offset: \n"))
         except ValueError:
             print(INVALID_CHOICE_ERROR)
             continue
-
+        if offset < 0:
+            print("Calculating positive offset equivalent...")
+            offset += 26
 
     if choice == DECRYPT_INPUT:
-        decrypt(specs)
+        handleDecrypt(text, offset)
     elif choice == ENCRYPT_INPUT:
-        encrypt(specs)
+        handleEncrypt(text, offset)
 
