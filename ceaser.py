@@ -9,7 +9,6 @@ ALPHABET="abcdefghijklmnopqrstuvwxyz"
 running = True
 
 def decrypt(text: str, offset:int) -> str:
-    #go through text
     message = ""
     for letter in text:
         index = ALPHABET.find(letter.lower())
@@ -23,13 +22,12 @@ def encrypt(text: str, offset:int):
     pass
 
 def handleDecrypt(text: str, offset: int | None):
-    #TODO check the value if null then go through all if not print result for value
     if offset != -1:
         print("Offset {}: \n    {}".format(offset, decrypt(text, offset - 1)))
     else:
         for index in range(1,27):
             print("Offset {}: \n    {}".format(index, decrypt(text, index - 1)))
-    pass
+
 
 def handleEncrypt(text: str, offset: int | None):
     pass
