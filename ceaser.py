@@ -3,6 +3,7 @@ ENCRYPT_INPUT = 2
 EXIT_INPUT = 3
 
 INVALID_CHOICE_ERROR="Choice invalid! Please try again... \n"
+OUTPUT_MESSAGE="Offset {}: \n    {}"
 
 ALPHABET="abcdefghijklmnopqrstuvwxyz"
 
@@ -12,25 +13,35 @@ def decrypt(text: str, offset:int) -> str:
     message = ""
     for letter in text:
         index = ALPHABET.find(letter.lower())
-        index = (index + offset) % 25
+        index = (index - offset + 26) % 26
         decodedLetter = ALPHABET[index]
         message += decodedLetter.upper() if letter.isupper() else decodedLetter
     return message
 
 
-def encrypt(text: str, offset:int):
-    pass
+def encrypt(text: str, offset:int) -> str:
+    message = ""
+    for letter in text:
+        index = ALPHABET.find(letter.lower())
+        index = (index + offset) % 26
+        encodedLetter = ALPHABET[index]
+        message += encodedLetter.upper() if letter.isupper() else encodedLetter
+    return message
 
-def handleDecrypt(text: str, offset: int | None):
+def handleDecrypt(text: str, offset: int):
     if offset != -1:
-        print("Offset {}: \n    {}".format(offset, decrypt(text, offset - 1)))
+        print(OUTPUT_MESSAGE.format(offset, decrypt(text, offset - 1)))
     else:
         for index in range(1,27):
-            print("Offset {}: \n    {}".format(index, decrypt(text, index - 1)))
+            print(OUTPUT_MESSAGE.format(index, decrypt(text, index - 1)))
 
 
-def handleEncrypt(text: str, offset: int | None):
-    pass
+def handleEncrypt(text: str, offset: int):
+    if offset != -1:
+        print(OUTPUT_MESSAGE.format(offset, encrypt(text, offset - 1)))
+    else:
+        for index in range(1,27):
+            print(OUTPUT_MESSAGE.format(index, encrypt(text, index - 1)))
 
 
 
@@ -73,8 +84,9 @@ while(running):
             continue
         if offset < 0:
             print("Calculating positive offset equivalent...")
-            offset += 26
-
+            offset *= -1
+        if offset > 26:
+            offset %= 26
     if choice == DECRYPT_INPUT:
         handleDecrypt(text, offset)
     elif choice == ENCRYPT_INPUT:
