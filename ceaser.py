@@ -17,6 +17,8 @@ def decrypt(text: str, offset:int) -> str:
     message = ""
     for letter in text:
         index = ALPHABET.find(letter.lower())
+        if index == -1:
+            continue
         index = (index - offset + 26) % 26
         decodedLetter = ALPHABET[index]
         message += decodedLetter.upper() if letter.isupper() else decodedLetter
@@ -27,6 +29,8 @@ def encrypt(text: str, offset:int) -> str:
     message = ""
     for letter in text:
         index = ALPHABET.find(letter.lower())
+        if index == -1:
+            continue
         index = (index + offset) % 26
         encodedLetter = ALPHABET[index]
         message += encodedLetter.upper() if letter.isupper() else encodedLetter
@@ -35,7 +39,8 @@ def encrypt(text: str, offset:int) -> str:
 #handles the decrypt management with single decrypt and show all decrypt
 def handleDecrypt(text: str, offset: int) -> None:
     if offset != -1: #if user chose offset
-        print(OUTPUT_MESSAGE.format(offset, decrypt(text, offset - 1)))
+        print(OUTPUT_MESSAGE.format(offset, decrypt(text, offset)))
+        print(OUTPUT_MESSAGE.format(offset * -1, decrypt(text, offset * -1)))
     else:
         for index in range(1,27): #if user chose "show all"
             print(OUTPUT_MESSAGE.format(index, decrypt(text, index - 1)))
@@ -102,4 +107,6 @@ def handleMainMenu() -> None:
         elif choice == ENCRYPT_INPUT:
             handleEncrypt(text, offset)
 
-handleMainMenu()
+if __name__ == "__main__":
+    handleMainMenu()
+
