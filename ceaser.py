@@ -12,6 +12,7 @@ ALPHABET="abcdefghijklmnopqrstuvwxyz"
 
 running = True
 
+#decrypts a cypher with a single offset value
 def decrypt(text: str, offset:int) -> str:
     message = ""
     for letter in text:
@@ -21,7 +22,7 @@ def decrypt(text: str, offset:int) -> str:
         message += decodedLetter.upper() if letter.isupper() else decodedLetter
     return message
 
-
+#encrypts a text using a single offset value
 def encrypt(text: str, offset:int) -> str:
     message = ""
     for letter in text:
@@ -31,6 +32,7 @@ def encrypt(text: str, offset:int) -> str:
         message += encodedLetter.upper() if letter.isupper() else encodedLetter
     return message
 
+#handles the decrypt management with single decrypt and show all decrypt
 def handleDecrypt(text: str, offset: int) -> None:
     if offset != -1: #if user chose offset
         print(OUTPUT_MESSAGE.format(offset, decrypt(text, offset - 1)))
@@ -38,7 +40,7 @@ def handleDecrypt(text: str, offset: int) -> None:
         for index in range(1,27): #if user chose "show all"
             print(OUTPUT_MESSAGE.format(index, decrypt(text, index - 1)))
 
-
+#handles the encrypt management with single encrypt and show all encrypt
 def handleEncrypt(text: str, offset: int) -> None:
     if offset != -1: #if user chose offset
         print(OUTPUT_MESSAGE.format(offset, encrypt(text, offset - 1)))
@@ -46,6 +48,7 @@ def handleEncrypt(text: str, offset: int) -> None:
         for index in range(1,27): #if user chose "show all"
             print(OUTPUT_MESSAGE.format(index, encrypt(text, index - 1)))
 
+#helper method to get user input that needs to be convertable to int
 def get_int_input(prompt: str) -> int | None:
     try:
         choice = int(input(prompt))
@@ -54,13 +57,13 @@ def get_int_input(prompt: str) -> int | None:
         return None
     return choice
 
+#if user chooses to input a offset value
 def get_offset() -> int:
     offset = get_int_input("Enter offset: \n")
     if offset is None:
         return -1
     return abs(offset) % 26
     
-
 def handleMainMenu() -> None:
     while(running):
 
