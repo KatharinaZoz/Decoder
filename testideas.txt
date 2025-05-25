@@ -1,0 +1,12 @@
+caeser:
+- jede mögliche eingaben kombi
+- für normale werte decrypt und encrypt testen
+- für rand werte decrypt und encrypt testen
+
+
+
+rsa:
+- ab welchen eingaben braucht der decoder länger als x zeit
+- standard werte
+- teste rand werte und +1 etc der max werte aus 1
+                
