@@ -1,6 +1,9 @@
 DECRYPT_INPUT = 1
 ENCRYPT_INPUT = 2
 EXIT_INPUT = 3
+OFFSET_INPUT = 1
+SHOW_ALL_INPUT = 2
+RETURN_INPUT = 3
 
 INVALID_CHOICE_ERROR="Choice invalid! Please try again... \n"
 OUTPUT_MESSAGE="Offset {}: \n    {}"
@@ -28,69 +31,72 @@ def encrypt(text: str, offset:int) -> str:
         message += encodedLetter.upper() if letter.isupper() else encodedLetter
     return message
 
-def handleDecrypt(text: str, offset: int):
-    if offset != -1:
+def handleDecrypt(text: str, offset: int) -> None:
+    if offset != -1: #if user chose offset
         print(OUTPUT_MESSAGE.format(offset, decrypt(text, offset - 1)))
     else:
-        for index in range(1,27):
+        for index in range(1,27): #if user chose "show all"
             print(OUTPUT_MESSAGE.format(index, decrypt(text, index - 1)))
 
 
-def handleEncrypt(text: str, offset: int):
-    if offset != -1:
+def handleEncrypt(text: str, offset: int) -> None:
+    if offset != -1: #if user chose offset
         print(OUTPUT_MESSAGE.format(offset, encrypt(text, offset - 1)))
     else:
-        for index in range(1,27):
+        for index in range(1,27): #if user chose "show all"
             print(OUTPUT_MESSAGE.format(index, encrypt(text, index - 1)))
 
+def get_int_input(prompt: str) -> int | None:
+    try:
+        choice = int(input(prompt))
+    except ValueError:
+        print(INVALID_CHOICE_ERROR)
+        return None
+    return choice
 
-def menu():
-    while(running):
-        try:
-            choice = int(input("Choose: \n [1] Decrypt \n [2] Encrypt \n [3] Exit \n"))
-        except ValueError:
-            print(INVALID_CHOICE_ERROR)
-            continue
+def get_offset() -> int:
+    offset = get_int_input("Enter offset: \n")
+    if offset is None:
+        return -1
+    return abs(offset) % 26
     
-        if choice == EXIT_INPUT:
+
+def handleMainMenu() -> None:
+    while(running):
+
+        #choose main function: decrypt cyphertext or encrypt message
+        choice = get_int_input("Choose: \n [1] Decrypt \n [2] Encrypt \n [3] Exit \n")
+        if choice is None:
+            continue
+        elif choice == EXIT_INPUT:
             print("Goodbye ^^")
             break
-        elif choice < 1 or choice > 3:
+        elif choice < DECRYPT_INPUT or choice > EXIT_INPUT:
             print(INVALID_CHOICE_ERROR)
             continue
 
-        filler = "cypher" if choice == 1 else "message"
-        text = input("Please enter the {}: \n".format(filler))
-
-        try:    
-            specs = int(input(" [1] Enter offset \n [2] Show all\n [3] Return \n"))
-        except ValueError:
-            print(INVALID_CHOICE_ERROR)
-            continue
+        text_label = "cypher" if choice == DECRYPT_INPUT else "message"
+        text = input("Please enter the {}: \n".format(text_label))
 
         offset = -1
-
-        if specs == EXIT_INPUT:
+        
+        #choose weather to de-/encrypt with a specific key or show all possible de-/encryptions
+        offset_choice = get_int_input(" [1] Enter offset \n [2] Show all\n [3] Return \n")
+        if offset_choice is None:
+            continue
+        elif offset_choice == EXIT_INPUT:
             print("Returning to Main Menu...")
             continue
-        elif specs < 1 or specs > 3:
+        elif offset_choice < OFFSET_INPUT or offset_choice > RETURN_INPUT:
             print(INVALID_CHOICE_ERROR)
             continue
-        elif specs == 1:
-            try:
-                offset = int(input("Enter offset: \n"))
-            except ValueError:
-                print(INVALID_CHOICE_ERROR)
-                continue
-            if offset < 0:
-                print("Calculating positive offset equivalent...")
-                offset *= -1
-            if offset > 26:
-             offset %= 26
+        elif offset_choice == OFFSET_INPUT:
+            offset = get_offset()
+            
 
         if choice == DECRYPT_INPUT:
             handleDecrypt(text, offset)
         elif choice == ENCRYPT_INPUT:
             handleEncrypt(text, offset)
 
-menu()
+handleMainMenu()
